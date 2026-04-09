@@ -1,121 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+type User = {
+  id: number;
+  name: string;
+  age: number;
+};
 
-function App() {
-  const [count, setCount] = useState(0)
+type Column<T> = {
+  clave: keyof T;
+  header: string;
+};
+
+type Props<T> = {
+  data: T[];
+  columns: Column<T>[];
+};
+
+function DataTable<T>({ data, columns }: Props<T>) {
+
+  console.log(columns);
+  if (data.length === 0) {
+    return <p>No hay datos para mostrar.</p>;
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <table   style={{
+      width: "100%",
+      borderCollapse: "collapse",
+      border: "1px solid rgba(131, 131, 131, 0.33)",
+      borderRadius: "8px",
+      overflow: "hidden",
+      fontSize: "14px",
+      backgroundColor: "rgba(165, 172, 247, 0.04)",
+    }}>
+      <thead>
+        <tr>
+          {columns.map((column, index) => (
+            <th key={index}>{column.header}</th>
+          ))}
+        </tr>
+      </thead>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <tbody>
+        {data.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {columns.map((column, colIndex) => (
+              <td key={colIndex}>{String(row[column.clave])}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 }
 
-export default App
+const users: User[] = [
+  { id: 1, name: "Oskar", age: 21 },
+  { id: 2, name: "Anna", age: 25 },
+  { id: 3, name: "Luis", age: 19 },
+];
+
+const columns: Column<User>[] = [
+  { clave: "name", header: "Nombre" },
+  { clave: "age", header: "Edad" },
+];
+
+function App() {
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1>Tabla</h1>
+      <DataTable data={users} columns={columns} />
+    </div>
+  );
+}
+
+export default App;
